@@ -67,6 +67,26 @@ def load_dataset(path):
     return output
 
 
+def load_dataset_csv(path):
+    df = pandas.read_csv(path)
+    output = {'qids': [], 'questions': [], 'answers': [],
+              'contexts': [], 'qid2cid': []}
+    contexts = {}
+    contexts_ind = 0
+    for i, row in df.iterrows():
+        if row.paragraph not in contexts:
+            contexts[row.paragraph] = contexts_ind
+            contexts_ind += 1
+            output["contexts"].append(row.paragraph)
+        output['qids'].append(row.question_id)
+        output['questions'].append(row.question)
+        cid = contexts[row.paragraph]
+        output['qid2cid'].append(cid)
+        if 'answer' in row:
+            output['answers'].append([{"text": row.answer}])
+return output
+
+
 def find_answer(offsets, begin_offset, end_offset):
     """Match token offsets with the char begin/end offsets of the answer."""
     start = [i for i, tok in enumerate(offsets) if tok[0] == begin_offset]
@@ -134,13 +154,17 @@ parser.add_argument('--split', type=str, help='Filename for train/dev split',
                     default='SQuAD-v1.1-train')
 parser.add_argument('--workers', type=int, default=None)
 parser.add_argument('--tokenizer', type=str, default='corenlp')
+parser.add_argument('--data_format', type=str, default='csv')
 args = parser.parse_args()
 
 t0 = time.time()
 
-in_file = os.path.join(args.data_dir, args.split + '.json')
-print('Loading dataset %s' % in_file, file=sys.stderr)
-dataset = load_dataset(in_file)
+if args.data_format != 'csv':
+    in_file = os.path.join(args.data_dir, args.split + '.json')
+    print('Loading dataset %s' % in_file, file=sys.stderr)
+    dataset = load_dataset(in_file)
+else:
+    dataset = load_dataset_csv(args.input_file)
 
 out_file = os.path.join(
     args.out_dir, '%s-processed-%s.txt' % (args.split, args.tokenizer)
