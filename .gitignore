@@ -7,3 +7,4 @@ data/
 scripts/reader/official_eval.py
 experiments/
 *.csv
+datasets/

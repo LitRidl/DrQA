@@ -125,6 +125,7 @@ def process_dataset(data, tokenizer, workers=None):
         ans_tokens = []
         if len(data['answers']) > 0:
             for ans in data['answers'][idx]:
+                print(ans)
                 found = find_answer(offsets,
                                     ans['answer_start'],
                                     ans['answer_start'] + len(ans['text']))
@@ -155,7 +156,7 @@ parser.add_argument('--split', type=str, help='Filename for train/dev split',
                     default='SQuAD-v1.1-train')
 parser.add_argument('--workers', type=int, default=None)
 parser.add_argument('--tokenizer', type=str, default='corenlp')
-parser.add_argument('--data_format', type=str, default='csv')
+parser.add_argument('--data_format', type=str, default='json')
 args = parser.parse_args()
 
 t0 = time.time()
