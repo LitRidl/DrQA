@@ -1,6 +1,13 @@
 from pymystem3 import Mystem
 import copy
 from .tokenizer import Tokens, Tokenizer
+import re
+
+
+def isfloat(element):
+    if re.match("^\d+?\.\d+?$", element) is None:
+        return False
+    return True
 
 
 class RussianTokenizer(Tokenizer):
@@ -24,8 +31,7 @@ class RussianTokenizer(Tokenizer):
                 continue
             elif len(tokens[i]) >= 2:
                 if len(tokens[i]['analysis']) < 1:
-                    ner = 'ENG'
-                    tag = tokens[i]['text']
+                    ner = 'FOR_LAN'
                     lem = tokens[i]['text']
                 else:
                     if self.annotators & {'pos'}:
@@ -40,7 +46,13 @@ class RussianTokenizer(Tokenizer):
                             ner = next(iter(set_of_ner))
                     lem = tokens[i]['analysis'][0]['lex']
             elif len(tokens[i]) < 2:
-                tag = tokens[i]['text']
+                if tokens[i]['text'].isdigit():
+                    tag = 'digital'
+                elif isfloat(tokens[i]['text']):
+                    tag = 'float'
+                elif len(tokens[i]['text']) < 2:
+                    if tokens[i]['text'] in '''~`!@#№$%^&*()-+=_{};:'"\|,./?[]<>''':
+                    	tag = tokens[i]['text']
                 lem = tokens[i]['text']
             data_text = tokens[i]['text']
             start = current_position_in_text
