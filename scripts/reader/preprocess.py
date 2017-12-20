@@ -11,6 +11,7 @@ import os
 import sys
 import json
 import time
+import pandas
 
 from multiprocessing import Pool
 from multiprocessing.util import Finalize
@@ -84,7 +85,7 @@ def load_dataset_csv(path):
         output['qid2cid'].append(cid)
         if 'answer' in row:
             output['answers'].append([{"text": row.answer}])
-return output
+    return output
 
 
 def find_answer(offsets, begin_offset, end_offset):
@@ -164,7 +165,7 @@ if args.data_format != 'csv':
     print('Loading dataset %s' % in_file, file=sys.stderr)
     dataset = load_dataset(in_file)
 else:
-    dataset = load_dataset_csv(args.input_file)
+    dataset = load_dataset_csv(args.data_dir)
 
 out_file = os.path.join(
     args.out_dir, '%s-processed-%s.txt' % (args.split, args.tokenizer)

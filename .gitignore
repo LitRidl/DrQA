@@ -6,3 +6,4 @@ data/
 *.egg-info
 scripts/reader/official_eval.py
 experiments/
+*.csv
