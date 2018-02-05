@@ -15,6 +15,7 @@ from multiprocessing import Pool
 from multiprocessing.util import Finalize
 from functools import partial
 from drqa import tokenizers
+from drqa.convert.squad import convert_csv_to_json_format
 
 # ------------------------------------------------------------------------------
 # Tokenize + annotate.
@@ -153,7 +154,12 @@ parser.add_argument('--split', type=str, help='Filename for train/dev split',
                     default='SQuAD-v1.1-train')
 parser.add_argument('--workers', type=int, default=None)
 parser.add_argument('--tokenizer', type=str, default='corenlp')
+#<<<<<<< HEAD
 parser.add_argument('--data_format', type=str, default='csv')
+#=======
+#parser.add_argument('--data_format', type=str, default='json')
+#parser.add_argument('--dif_out', type=str, default=None)
+#>>>>>>> 71c5ff47f1118d9a007e2f89c28bb7bdb670f5ba
 args = parser.parse_args()
 
 t0 = time.time()
@@ -163,7 +169,12 @@ if args.data_format != 'csv':
     print('Loading dataset %s' % in_file, file=sys.stderr)
     dataset = load_dataset(in_file)
 else:
+#<<<<<<< HEAD
     dataset = load_dataset_csv(args.input_file)
+#=======
+#    convert_csv_to_json_format([args.data_dir], args.dif_out)
+#    dataset = load_dataset(args.dif_out)
+#>>>>>>> 71c5ff47f1118d9a007e2f89c28bb7bdb670f5ba
 
 out_file = os.path.join(
     args.out_dir, '%s-processed-%s.txt' % (args.split, args.tokenizer)
