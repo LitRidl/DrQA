@@ -8,3 +8,8 @@ scripts/reader/official_eval.py
 experiments/
 *.csv
 datasets/
+*.txt
+*.json
+*.db
+*.npz
+files_for_models/

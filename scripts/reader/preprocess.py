@@ -5,13 +5,11 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 """Preprocess the SQuAD dataset for training."""
-
 import argparse
 import os
 import sys
 import json
 import time
-import pandas
 
 from multiprocessing import Pool
 from multiprocessing.util import Finalize
@@ -85,7 +83,7 @@ def load_dataset_csv(path):
         output['qid2cid'].append(cid)
         if 'answer' in row:
             output['answers'].append([{"text": row.answer}])
-    return output
+return output
 
 
 def find_answer(offsets, begin_offset, end_offset):
@@ -125,7 +123,6 @@ def process_dataset(data, tokenizer, workers=None):
         ans_tokens = []
         if len(data['answers']) > 0:
             for ans in data['answers'][idx]:
-                print(ans)
                 found = find_answer(offsets,
                                     ans['answer_start'],
                                     ans['answer_start'] + len(ans['text']))
@@ -156,7 +153,7 @@ parser.add_argument('--split', type=str, help='Filename for train/dev split',
                     default='SQuAD-v1.1-train')
 parser.add_argument('--workers', type=int, default=None)
 parser.add_argument('--tokenizer', type=str, default='corenlp')
-parser.add_argument('--data_format', type=str, default='json')
+parser.add_argument('--data_format', type=str, default='csv')
 args = parser.parse_args()
 
 t0 = time.time()
@@ -166,7 +163,7 @@ if args.data_format != 'csv':
     print('Loading dataset %s' % in_file, file=sys.stderr)
     dataset = load_dataset(in_file)
 else:
-    dataset = load_dataset_csv(args.data_dir)
+    dataset = load_dataset_csv(args.input_file)
 
 out_file = os.path.join(
     args.out_dir, '%s-processed-%s.txt' % (args.split, args.tokenizer)

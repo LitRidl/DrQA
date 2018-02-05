@@ -485,7 +485,9 @@ def main(args):
 
         # Validate unofficial (dev)
         result = validate_unofficial(args, dev_loader, model, stats, mode='dev')
-
+        with open('val.txt', 'a') as result_file:
+            print(*result, file=result_file)
+        result_file.close()
         # Validate official
         if args.official_eval:
             result = validate_official(args, dev_loader, model, stats,
